@@ -1,0 +1,59 @@
+.signin_root_div {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(130deg, #1f8594, #0dbaba, #56e1f5);
+  padding: 18px;
+}
+
+.signin_main_div {
+  width: 600px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 3px 4px 25px 23px rgba(18, 152, 170, 0.75);
+  -webkit-box-shadow: 3px 4px 25px 23px rgba(18, 152, 170, 0.75);
+  -moz-box-shadow: 3px 4px 25px 23px rgba(18, 152, 170, 0.75);
+  padding: 4px 20px 20px 20px;
+}
+
+.signin_heading_div {
+  text-align: center;
+  /* background-color: #0dbaba; */
+  background: linear-gradient(130deg, #1f8594, #0dbaba, #56e1f5);
+  padding: 9px;
+  margin-bottom: 25px;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
+}
+
+.signin_heading_text {
+  font-size: 25px;
+  font-family: "Roboto Condensed", sans-serif;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.signin_form_label {
+  font-weight: 600;
+}
+
+.signin_icons {
+  font-size: 22px !important;
+  margin-bottom: 4px;
+}
+
+.signin_button {
+  font-size: 16px !important;
+  margin-top: 15px !important;
+  margin-bottom: 20px !important;
+  text-transform: capitalize !important;
+  /* background-color: #067e8f !important; */
+}
+
+.signin_login_text {
+  font-size: 16px;
+  color: #e61e7b;
+  font-weight: 700;
+}
+.signin_login_text:hover {
+  color: #0267ba;
+}

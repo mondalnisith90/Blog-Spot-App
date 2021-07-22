@@ -1,0 +1,61 @@
+.myprofile_root_div {
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 20px 20px 20px;
+}
+
+.myprofile_main_div {
+  width: 600px;
+  color: white;
+  padding: 0px;
+  border-radius: 15px;
+}
+
+.myprofile_profile_pic {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 4px solid #d0d5d6;
+  object-fit: cover;
+}
+
+.myprofile_camera_icon {
+  font-size: 30px !important;
+  color: coral !important;
+  margin-left: -10px;
+  cursor: pointer;
+}
+
+.myprofile_user_name {
+  color: #1191ab;
+  font-size: 26px;
+  font-family: "Roboto Condensed", sans-serif;
+  margin-top: 15px;
+}
+
+.myprofile_user_info_div {
+  padding: 40px 20px 20px 30px;
+}
+
+.myprofile_user_info_text {
+  color: black;
+  font-size: 18px;
+  font-family: "Roboto Condensed", sans-serif;
+}
+
+.update_profile_button {
+  font-size: 16px !important;
+  margin-top: 15px !important;
+  margin-bottom: 20px !important;
+  text-transform: capitalize !important;
+  background-color: #11ab63 !important;
+}
+
+.myprofile_login_text {
+  font-size: 18px;
+  color: #e61e7b;
+  font-weight: 700;
+}
+.myprofile_login_text:hover {
+  color: #0267ba;
+}
