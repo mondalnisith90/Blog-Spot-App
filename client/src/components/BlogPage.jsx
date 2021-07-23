@@ -7,7 +7,7 @@ const BlogPage = () => {
         <>
          <section className="blogpage_root_div">
           <div className="row blogpage_main_div">
-           <div className="col-lg-3 col-md-3 col-sm-12 col-12 m-auto d-block text-center blog_page_profile_div " >
+           <div className="col-lg-3 col-md-3 col-sm-12 col-12 text-center blog_page_profile_div " >
                <img src={profilePic} alt="" className="blogpage_profile_pic" />
                <p className="blogpage_profile_name">Gia Karter</p>
                <div className="d-flex justify-content-around align-items-center mt-4">
@@ -20,7 +20,7 @@ const BlogPage = () => {
                </div> 
            </div>
 
-           <div className="col-lg-9 col-md-9 col-sm-12 col-12 m-auto d-block blogpage_blog_div ">
+           <div className="col-lg-9 col-md-9 col-sm-12 col-12 blogpage_blog_div ">
            <img src={blogImg} alt="" className="blogpage_blog_image" />
            <div className="blogpage_blog_body">
              <div className="blogpage_body_header_div d-flex justify-content-between">

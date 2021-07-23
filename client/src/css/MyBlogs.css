@@ -1,0 +1,44 @@
+.myblogs_root_div {
+  width: 100%;
+  background-color: #ffffff;
+}
+.myblogs_main_div {
+  background-color: #edf2f0;
+  padding: 40px 10px 10px 10px;
+}
+
+.myblogs_profile_div {
+  padding-top: 60px;
+  padding-bottom: 20px;
+  background-color: #edf2f0;
+}
+
+.myblogs_profile_pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid #ffffff;
+  object-fit: cover;
+}
+
+.myblogs_profile_name {
+  color: #1191ab;
+  font-size: 28px;
+  font-family: "Roboto Condensed", sans-serif;
+  margin-top: 15px;
+  font-weight: 700;
+}
+
+.myblogs_blog_div {
+  background-color: #ffffff;
+  padding: 25px;
+  padding-top: 0px;
+}
+
+.myblog_profile_text {
+  font-size: 20px;
+  font-weight: 400;
+  font-family: "Roboto Condensed", sans-serif;
+  color: #e3ac05;
+  margin-top: 10px;
+}

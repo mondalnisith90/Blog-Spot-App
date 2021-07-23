@@ -1,19 +1,16 @@
 .blogpage_root_div {
   width: 100%;
-  min-height: 100vh;
-  /* padding-top: 100px; */
+  background-color: #ffffff;
 }
 .blogpage_main_div {
-  height: 100%;
   background-color: #edf2f0;
-  padding: 0px;
+  padding: 60px 10px 10px 10px;
 }
 
 .blog_page_profile_div {
-  height: 800px !important;
-  /* padding-top: -100px; */
+  padding-top: 65px;
+  padding-bottom: 30px;
   background-color: #edf2f0;
-  /* min-height: 100vh; */
 }
 
 .blogpage_profile_pic {
@@ -72,5 +69,4 @@
 .blogpage_blog_div {
   background-color: #ffffff;
   padding: 25px;
-  padding-top: 80px;
 }

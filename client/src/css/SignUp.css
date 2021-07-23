@@ -57,3 +57,9 @@
 .signup_login_text:hover {
   color: #0267ba;
 }
+
+.input_error_span {
+  color: #ee00aa;
+  font-size: 12px;
+  font-weight: bold;
+}
