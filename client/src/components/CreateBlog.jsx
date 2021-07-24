@@ -110,7 +110,7 @@ const CreateBlog = () => {
                </div>
                <div className="mb-3">
                  <label className="form-label create_blog_form_label" htmlFor="inputFile">Blog Image* </label>
-                 <input type="file" className="form-control" id="inputFile" />
+                 <input type="file" accept="image/*" className="form-control" id="inputFile" />
                </div>
                <div className="row my-4">
                 <div className="col-md-6">

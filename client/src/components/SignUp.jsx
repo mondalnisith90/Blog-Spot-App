@@ -9,10 +9,14 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {NavLink} from 'react-router-dom';
 import { useState } from 'react';
 import validator from "validator";
+import firebase from "../Firebase/Firebaseconfig";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "../css/SignUp.css";
 
 
 const SignUp = () => {
+
+  const firebaseStorageRef = firebase.storage().ref();
 
   const [formInputValue, setFormInputValue] = useState({
     name: "", email: "", password: "", cpassword: "", address: "", profission: "", profile_pic: ""
@@ -24,6 +28,8 @@ const SignUp = () => {
     confirmPasswordError: "",
     serverError: ""
 });
+  
+ const [progressbarState, setProgressbarState] = useState(false);
 
   const { name, email, password, cpassword, address, profission, profile_pic} = formInputValue;
   const {nameError, emailError, passwordError, confirmPasswordError, serverError} = inputFieldsError;
@@ -31,9 +37,15 @@ const SignUp = () => {
   const inputTextChange = (event) => {
     setInputFieldsError("");
     const fieldName = event.target.name;
-    const fieldValue = event.target.value;
+    let fieldValue = event.target.value;
+    if(fieldName === "profile_pic"){
+      fieldValue = event.target.files[0];
+    }
     setFormInputValue({...formInputValue, [fieldName]: fieldValue});
   }
+
+
+  console.log(`${(Date.now()) + (formInputValue.profile_pic.name)}`)
 
   const formValidation = () => {
     //check if users fills all the input fields currectly or not
@@ -62,12 +74,62 @@ const SignUp = () => {
 }
 
 
-  const signupFormSubmit = (event) => {
+  const signupFormSubmit =  (event) => {
     event.preventDefault();
     if(formValidation()){
       //all ok. Now send data to server
-      alert("all Ok");
+      setProgressbarState(true);
+      if(profile_pic){
+        //Means user select his/her profile Picture
+        //Save it to firebase
+        saveProfileImageOnFirebase(profile_pic);
+      }else{
+        //User not select any profile picture
+        //So, Simpply Perform user registration with default image
+        performUserRegistration(null);
+      }
     }
+    
+  }
+
+  const saveProfileImageOnFirebase = (file) => {
+    //Save user profile image on Firebase Storage
+    try {
+    const uploadTask = firebaseStorageRef.child(`profileImages/${(Date.now()) + (file.name)}`).put(file);
+    console.log("Image is uploading to firebase...");
+   
+    uploadTask.on("state_changed",
+    (snapshot)=>{
+      //for handeling upload progress
+     },
+     (error) => {
+       console.log(error.message);
+       setProgressbarState(false);
+
+     },
+     async () => {
+       //Get image download url
+       const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+       //save user data on server with his/her profile image
+       performUserRegistration(imageUrl);
+       console.log('File is available at', imageUrl);
+     }
+    )
+  } catch (error) {
+      console.log(error.message);
+  }
+  }
+
+
+  const performUserRegistration = async (profileImageUrl) => {
+    //send user registration data to serevr
+    if(!profileImageUrl){
+      //If user not select his/her profile image, then  
+      //profileImageUrl value will be default 
+      profileImageUrl = "default";
+    }
+    alert(profileImageUrl);
+    setProgressbarState(false);
   }
 
 
@@ -79,7 +141,7 @@ const SignUp = () => {
                <h2 className="signup_heading_text" >Create Account</h2>
                {/* <hr/> */}
             </div>
-              <form onSubmit={signupFormSubmit}>
+            <form onSubmit={signupFormSubmit}>
                <div className="FORM_div">
                <p className="text-center text-danger fw-bold">{serverError}</p>
                <div className="mb-3">
@@ -99,6 +161,7 @@ const SignUp = () => {
                     <input type="password" class="form-control" value={password} onChange={inputTextChange} name="password" placeholder="Password" aria-label="Password"required />
                     <span className="input_error_span">{passwordError}</span>
                   </div>
+                  
                   <div class="col-md-6 ">
                   <label htmlFor="exampleInputEmail1" className="form-label signup_form_label"><LockIcon className="signup_icons"  /> Confirm Password*</label>
                     <input type="password" class="form-control"  value={cpassword} onChange={inputTextChange} name="cpassword" placeholder="Confirm password" aria-label="Confirm Password" required/>
@@ -117,13 +180,19 @@ const SignUp = () => {
 
                <div className="mb-3">
                  <label className="form-label signup_form_label" htmlFor="inputFile"><CameraAltIcon className="signup_icons"/> Profile Picture </label>
-                 <input type="file" className="form-control" id="inputFile" />
+                 <input type="file" accept="image/*" className="form-control" id="inputFile" name="profile_pic" onChange={inputTextChange} />
                </div>
                <div className="row my-4">
-                <div className="col-md-6">
-                  <Button variant="contained" type="submit" color="primary" className="signup_button"  startIcon={<PersonAddIcon />} >
+                <div className="col-md-6 d-flex justify-content-around align-items-center">
+                <div>
+                <Button variant="contained" type="submit" color="primary" className="signup_button"  startIcon={<PersonAddIcon/>} >
                   SignUp
                   </Button>
+                </div>
+                 <div>
+                  {progressbarState ? <CircularProgress color="primary" /> : null }
+                 </div>
+                 
                 </div>
   
                <div className="col-md-6 mt-4">

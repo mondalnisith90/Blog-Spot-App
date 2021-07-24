@@ -45,8 +45,7 @@ const MyProfile = () => {
          </div>
          <hr className="myprofile_hr" />
 
-   {/* test */}
-
+         {/* modal */}
           <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
          <div className="modal-dialog modal-dialog-centered" role="document">
            <div className="modal-content">
@@ -112,8 +111,6 @@ const MyProfile = () => {
                 shrink: true,
                 }} />
               </div>
-
-
              </div>
              <div className="modal-footer">
                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -123,9 +120,8 @@ const MyProfile = () => {
          </div>
          </div>
 
+         {/* modal */}
 
-
-{/* test */}
             <p className="myprofile_user_info_text">Status: Hi, I am Gia Karter.</p>  <hr className="myprofile_hr" />
             <p className="myprofile_user_info_text">Address: California, America</p>  <hr className="myprofile_hr" />
             <p className="myprofile_user_info_text">Total blog publish: 3</p>  <hr className="myprofile_hr" />
