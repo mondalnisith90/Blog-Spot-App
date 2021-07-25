@@ -116,6 +116,7 @@ const SignUp = () => {
      }
     )
   } catch (error) {
+      setProgressbarState(false);
       console.log(error.message);
   }
   }

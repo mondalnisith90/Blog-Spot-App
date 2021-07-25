@@ -4,26 +4,34 @@ import SendIcon from '@material-ui/icons/Send';
 import {NavLink} from 'react-router-dom';
 import { useState } from 'react';
 import BlogCategoryData from "../Data/BlogCategoryData";
+import firebase from "../Firebase/Firebaseconfig";
 import validator from 'validator';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "../css/CreateBlog.css";
 
 const CreateBlog = () => {
+  const firebaseStorageRef = firebase.storage().ref();
     const [formInputValue, setFormInputValue] = useState({ title: "", body: "", catogery: "", auther: "", blog_image: "" });
           const [inputFieldsError, setInputFieldsError] = useState({
             titleError: "",
             bodyError: "",
             catogeryError: "",
             autherError: "",
+            blogImageError: "",
             serverError: ""
         });
+        const [progressbarState, setProgressbarState] = useState(false);
         
           const { title, body, catogery, auther, blog_image} = formInputValue;
-          const {titleError, bodyError, catogeryError, autherError, serverError} = inputFieldsError;
+          const {titleError, bodyError, catogeryError, autherError, blogImageError, serverError} = inputFieldsError;
         
           const inputTextChange = (event) => {
             setInputFieldsError("");
             const fieldName = event.target.name;
-            const fieldValue = event.target.value;
+            let fieldValue = event.target.value;
+            if(fieldName === "blog_image"){
+              fieldValue = event.target.files[0];
+            }
             setFormInputValue({...formInputValue, [fieldName]: fieldValue});
           }
         
@@ -56,6 +64,11 @@ const CreateBlog = () => {
             return false;
           }
 
+          if(!blog_image){
+            setInputFieldsError({...inputFieldsError, blogImageError: "Please select a blog image"});
+            return false;
+          }
+
             return true;
         
         }
@@ -65,10 +78,55 @@ const CreateBlog = () => {
             event.preventDefault();
             if(formValidation()){
               //all ok. Now send data to server
-              alert("all Ok");
+              //Save blog image on Firebase storage
+              setProgressbarState(true);
+              saveBlogImageOnFirebase(blog_image);
             }
           }
+
+
+
+          
+          const saveBlogImageOnFirebase = (file) => {
+            //Save user profile image on Firebase Storage
+            try {
+            const uploadTask = firebaseStorageRef.child(`blogImages/${(Date.now()) + (file.name)}`).put(file);
+            console.log("Image is uploading to firebase...");
+           
+            uploadTask.on("state_changed",
+            (snapshot)=>{
+              //for handeling upload progress
+             },
+             (error) => {
+               console.log(error.message);
+               setProgressbarState(false);
         
+             },
+             async () => {
+               //Get image download url
+               const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
+               //save user data on server with his/her profile image
+               saveBlogOnServer(imageUrl);
+               console.log('File is available at', imageUrl);
+             }
+            )
+          } catch (error) {
+              setProgressbarState(false);
+              console.log(error.message);
+          }
+          }   
+          
+        
+    
+  const saveBlogOnServer = async (blogImageUrl) => {
+    //send blog data to serevr
+    setProgressbarState(false);
+    alert(blogImageUrl);
+    // setProgressbarState(false);
+  }      
+
+
+
         
     return(
         <>
@@ -110,13 +168,20 @@ const CreateBlog = () => {
                </div>
                <div className="mb-3">
                  <label className="form-label create_blog_form_label" htmlFor="inputFile">Blog Image* </label>
-                 <input type="file" accept="image/*" className="form-control" id="inputFile" />
+                 <input type="file" accept="image/*" className="form-control" id="inputFile" name="blog_image" onChange={inputTextChange} />
+                 <span className="input_error_span" >{blogImageError}</span>
                </div>
                <div className="row my-4">
-                <div className="col-md-6">
+                <div className="col-md-6 d-flex justify-content-around align-items-center">
+                <div>
                   <Button variant="contained" type="submit" color="primary" className="create_blog_button"  endIcon={<SendIcon />} >
                     Publish Blog
                   </Button>
+                </div>
+                <div>
+                  {progressbarState ? <CircularProgress color="primary" /> : null }
+                </div>
+                
                 </div>
                <div className="col-md-6 mt-4">
                <NavLink exact to="/signup" style={{textDecoration: "none"}}>

@@ -80,3 +80,13 @@
   margin-bottom: -5px;
   margin-top: 8px;
 }
+
+.update_image_button {
+  text-transform: capitalize !important;
+  background-color: green !important;
+  color: white !important;
+}
+
+.cancel_image_button {
+  text-transform: capitalize !important;
+}
