@@ -47,7 +47,7 @@ BlogsRouter.get("/blog/custom", async (req, res) => {
         if(limit<0){
             limit = 0;
         }
-        if(catogery=="random"){
+        if(catogery=="All"){
             //Get blogs of any catogery
             const dbResponse = await Blog.find().limit(limit);
             if(dbResponse){
@@ -76,21 +76,14 @@ BlogsRouter.post("/blog", UserAuth, async (req, res) => {
     if(!title || !body || !catogery || !blog_image || !auther || !auther_id){
         res.status(420).json("Please fill the input fields properly.");
     }else{
-        //check if the blog title is already exists in database or not
-        //Because title must be unique
         try {
-            const dbResponse = await Blog.findOne({title});
-            if(dbResponse) {
-                //Means title already exists in DB
-                res.status(420).json("This blog title is already used by some one. Try with another one.");
-            }else{
-                //save the blog in database
-                const blog = new Blog({title, body, catogery, blog_image, auther, auther_id});
-                await blog.save();
-                res.status(200).json("Blog published successfully.");
-            }
+            //save the blog in database
+             const blog = new Blog({title: title, body, catogery, blog_image, auther, auther_id});
+             await blog.save();
+             res.status(200).json("Blog published successfully.");
         } catch (error) {
-            res.status(400).json("Blog is not published.");
+            // console.log(error.message)
+            res.status(400).json("Blog is not published: "+error.message);
         }
     }
 });

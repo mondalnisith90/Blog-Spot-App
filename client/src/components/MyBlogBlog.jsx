@@ -10,6 +10,16 @@ const MyBlogBlog = ({setState}) => {
   const editClick = () => {
     setState(false);
   }
+
+
+  const deleteBlogButtonClick = () => {
+    const value = window.confirm("Are you sure to delete this blog? If you press OK then blog will be deleted permanently.");
+    if(value){
+      //user press ok to delete this blog
+      //Now delete this blog from server
+    }
+  }
+
     return(
         <>
         <div className="my-5">
@@ -24,7 +34,7 @@ const MyBlogBlog = ({setState}) => {
               <EditIcon className="myblogblog_edit_icon" onClick={editClick}/>
               </Tooltip>
                 <Tooltip title="Delete blog">
-                <DeleteIcon className="myblogblog_delete_icon" />
+                <DeleteIcon className="myblogblog_delete_icon" onClick={deleteBlogButtonClick} />
                 </Tooltip>
                
             </div>

@@ -7,6 +7,7 @@ import MyProfile from './components/MyProfile';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import Navbar from "./components/Navbar";
+import 'react-toastify/dist/ReactToastify.css';
 import Home from './components/Home';
 import {Route, Switch} from 'react-router-dom';
 import './App.css';
@@ -20,7 +21,7 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/create-blog" component={CreateBlog} />
         <Route exact path="/my-blog" component={MyBlogs} />
-        <Route exact path="/single-blog" component={BlogPage} />
+        <Route exact path="/single-blog/:blogId" component={BlogPage} />
         <Route exact path="/my-profile" component={MyProfile} />
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/signin" component={SignIn} />

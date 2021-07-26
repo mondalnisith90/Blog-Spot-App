@@ -21,6 +21,7 @@ UserRouter.get("/users", async (req, res) => {
         if(dbResponse){
             //user data is available
             res.status(200).json(dbResponse);
+            
 
         }else{
             //invalid user id

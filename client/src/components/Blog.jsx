@@ -1,34 +1,38 @@
 // import image from "../images/cat2.jpg";
 import {useHistory} from 'react-router-dom';
+import BlogPage from './BlogPage';
 import "../css/Blog.css";
 
 
-const Blog = ({image}) => {
+const Blog = ({blogObj, setClickedBlogId, setShowLargeBlog}) => {
     const history = useHistory();
     const onBlogClick = () => {
-        history.push("/single-blog");
+        // history.push(`/single-blog/${blogObj._id}`);
+      // return ( <BlogPage blogId={blogObj._id} />);
+      setClickedBlogId(blogObj._id);
+      setShowLargeBlog(true);
+       
     }
 
     return(
         <>
-         <section className="blog_root_div shadow mb-5" onClick={onBlogClick}>
-           <img src={image} alt="" className="blog_image" />
+         <section className="blog_root_div shadow mb-5" onClick={onBlogClick }>
+           <img src={blogObj.blog_image} alt="" className="blog_image" />
            <div className="blog_body">
              <div className="body_header_div d-flex justify-content-between">
              <div>
-             <p className="auther_name_text">Auther: Gia Karter</p>
+            <p className="auther_name_text">Auther: {blogObj.auther}</p>
              </div>
              <div>
-             <p className="published_date_text">4 days  ago</p>
+             <p className="published_date_text">{blogObj.publish_date}</p>
              </div>
              </div>
-             <h2 className="blog_title">Checken Chue delicius recipy</h2>
+             <h2 className="blog_title">{blogObj.title}</h2>
              <p className="blog_description">
-             Anthropologist Richard Wrangham has proposed cooking arose before 1.8 million years ago, an invention of
-             our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
-             our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
+             {blogObj.body}
              </p>
            </div>
+           
          </section>
         </>
     );

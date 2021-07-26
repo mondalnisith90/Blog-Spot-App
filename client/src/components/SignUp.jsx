@@ -8,15 +8,30 @@ import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {NavLink} from 'react-router-dom';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 import validator from "validator";
 import firebase from "../Firebase/Firebaseconfig";
+import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import "../css/SignUp.css";
+
+
+const reactToastStyle = {
+  position: "top-center",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  };
 
 
 const SignUp = () => {
 
   const firebaseStorageRef = firebase.storage().ref();
+  const history = useHistory();
 
   const [formInputValue, setFormInputValue] = useState({
     name: "", email: "", password: "", cpassword: "", address: "", profission: "", profile_pic: ""
@@ -45,7 +60,7 @@ const SignUp = () => {
   }
 
 
-  console.log(`${(Date.now()) + (formInputValue.profile_pic.name)}`)
+  // console.log(`${(Date.now()) + (formInputValue.profile_pic.name)}`)
 
   const formValidation = () => {
     //check if users fills all the input fields currectly or not
@@ -105,6 +120,7 @@ const SignUp = () => {
      (error) => {
        console.log(error.message);
        setProgressbarState(false);
+       toast.error("Image not upload", reactToastStyle);
 
      },
      async () => {
@@ -112,12 +128,11 @@ const SignUp = () => {
        const imageUrl = await uploadTask.snapshot.ref.getDownloadURL();
        //save user data on server with his/her profile image
        performUserRegistration(imageUrl);
-       console.log('File is available at', imageUrl);
      }
     )
   } catch (error) {
       setProgressbarState(false);
-      console.log(error.message);
+      toast.error("Image not upload", reactToastStyle);
   }
   }
 
@@ -129,8 +144,38 @@ const SignUp = () => {
       //profileImageUrl value will be default 
       profileImageUrl = "default";
     }
-    alert(profileImageUrl);
-    setProgressbarState(false);
+    const url = "http://localhost:8000/users/register";
+    const data = {
+      name: name,
+      email: email,
+      password: password,
+      address: address ? address : "unknown",
+      profile_pic: profileImageUrl,
+      profission: profission ? profission : "unknown",
+      status: `Hello I am ${name}` 
+    }
+    try {
+      const serverResponse = await axios.post(url, data);
+      if(serverResponse.status === 201){
+        toast.success(serverResponse.data, reactToastStyle);
+        setProgressbarState(false);
+        setTimeout(() => {
+          history.push("/signin");
+        }, 2000);
+      }
+    } catch (error) {
+      console.log("error called",error.message)
+      setProgressbarState(false);
+      toast.error("Registration Failed", reactToastStyle);
+      const serverResponse = error.response;
+      if(serverResponse){
+          setInputFieldsError({...inputFieldsError, serverError: serverResponse.data});
+      }else{
+          setInputFieldsError({...inputFieldsError, serverError: error.message});
+      }  
+    }
+
+  
   }
 
 
@@ -140,8 +185,9 @@ const SignUp = () => {
           <div className="signup_main_div">
             <div className="signup_heading_div">
                <h2 className="signup_heading_text" >Create Account</h2>
-               {/* <hr/> */}
+               <ToastContainer />
             </div>
+            
             <form onSubmit={signupFormSubmit}>
                <div className="FORM_div">
                <p className="text-center text-danger fw-bold">{serverError}</p>

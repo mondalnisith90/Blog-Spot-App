@@ -9,15 +9,28 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {NavLink} from 'react-router-dom';
 import { useState } from 'react';
+import { useHistory } from 'react-router';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 import "../css/SignIn.css";
 
+
+const reactToastStyle = {
+  position: "top-center",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  };
 
 
 const SignIn = () => {
 
   const [inputFieldsData, setInputFieldsData] = useState({ email: "", password: ""});
   const [serverError, setServerError] = useState("");
-
+  const history = useHistory();
   const {email, password} = inputFieldsData;
 
   const inputTextChange = (event) => {
@@ -28,9 +41,32 @@ const SignIn = () => {
    }
 
 
-   const signinFormSubmit = (event) => {
+   const signinFormSubmit = async (event) => {
      event.preventDefault();
      //send data to server for user login
+     const url = "http://localhost:8000/users/login";
+     try {
+      const serverResponse = await axios.post(url, {email, password}, {withCredentials: true});
+      if(serverResponse.status===200){
+        //user ogin successfull
+        toast.success("Login successfull", reactToastStyle);
+        setTimeout(() => {
+          history.push("/");
+        }, 2300);
+      }
+     } catch (error) {
+       //user login failed
+           //set server error message
+           try{
+             const serverResponse = error.response;
+             toast.error(serverResponse.data, reactToastStyle);
+             setServerError(serverResponse.data);
+           }catch(error){
+             setServerError(error.message);
+           } 
+     }
+     
+
    }
 
 
@@ -39,8 +75,10 @@ const SignIn = () => {
     return(
         <section className="signin_root_div  d-flex align-items-center justify-content-center">
          <div className="signin_main_div">
+         <ToastContainer />
             <div className="signin_heading_div">
                <h2 className="signin_heading_text" >User Login</h2>
+               
             </div>
               <form onSubmit={signinFormSubmit} >
                <div className="FORM_div">

@@ -6,12 +6,29 @@ import { useState } from 'react';
 import BlogCategoryData from "../Data/BlogCategoryData";
 import firebase from "../Firebase/Firebaseconfig";
 import validator from 'validator';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import "../css/CreateBlog.css";
 
+
+
+const reactToastStyle = {
+  position: "top-center",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  };
+
+//for testing perpose 
+const userId = "60fe529791ea180514755c5d";
+
 const CreateBlog = () => {
   const firebaseStorageRef = firebase.storage().ref();
-    const [formInputValue, setFormInputValue] = useState({ title: "", body: "", catogery: "", auther: "", blog_image: "" });
+    const [formInputValue, setFormInputValue] = useState({ title: "", body: "", catogery: "",  blog_image: "", auther: "", auther_id: userId });
           const [inputFieldsError, setInputFieldsError] = useState({
             titleError: "",
             bodyError: "",
@@ -22,7 +39,7 @@ const CreateBlog = () => {
         });
         const [progressbarState, setProgressbarState] = useState(false);
         
-          const { title, body, catogery, auther, blog_image} = formInputValue;
+          const { title, body, catogery, blog_image, auther, auther_id} = formInputValue;
           const {titleError, bodyError, catogeryError, autherError, blogImageError, serverError} = inputFieldsError;
         
           const inputTextChange = (event) => {
@@ -68,9 +85,7 @@ const CreateBlog = () => {
             setInputFieldsError({...inputFieldsError, blogImageError: "Please select a blog image"});
             return false;
           }
-
             return true;
-        
         }
         
         
@@ -120,9 +135,38 @@ const CreateBlog = () => {
     
   const saveBlogOnServer = async (blogImageUrl) => {
     //send blog data to serevr
-    setProgressbarState(false);
-    alert(blogImageUrl);
-    // setProgressbarState(false);
+    const url = "http://localhost:8000/blog";
+    const data = {
+      title: title,
+      body: body,
+      catogery: catogery,
+      blog_image: blogImageUrl,
+      auther: auther,
+      auther_id: auther_id
+    }
+    try {
+      const serverResponse = await axios.post(url, data, {withCredentials: true});
+      if(serverResponse.status == 200){
+        //blog created successfully
+        setProgressbarState(false);
+        toast.success(serverResponse.data, reactToastStyle);
+        setFormInputValue({ title: "", body: "", catogery: "",  blog_image: "", auther: "", auther_id: userId });
+
+      }
+    } catch (error) {
+      //Blog not created. Something is wrong
+       //set server error message
+       setProgressbarState(false);
+       try{
+        const serverResponse = error.response;
+        toast.error(serverResponse.data, reactToastStyle);
+        setInputFieldsError({...inputFieldsError, serverError: serverResponse.data});
+      }catch(error){
+        setInputFieldsError({...inputFieldsError, serverError: error.message});
+      } 
+      
+    }
+    
   }      
 
 
@@ -135,9 +179,12 @@ const CreateBlog = () => {
              <div className="create_blog_heading_div">
                <h2 className="create_blog_heading_text" >Create Blog</h2>
                <hr className="create_blog_hr" />
+               <ToastContainer />
+               <span className="input_error_span">{serverError}</span>
             </div>
               <form onSubmit={blogFormSubmit}>
                <div className="FORM_div" >
+               
                <div className="mb-3">
                  <label htmlFor="exampleInputusername" className="form-label create_blog_form_label"> Blog Title*</label>
                  <input type="text" className="form-control" value={title} onChange={inputTextChange} name="title"  id="exampleInputusername" aria-describedby="emailHelp" placeholder="Enter blog title" required />

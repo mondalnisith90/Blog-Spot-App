@@ -1,27 +1,37 @@
 import Blog from "./Blog";
 import BlogCategoryData from "../Data/BlogCategoryData";
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
-import blogimg1 from "../images/cat1.jpg";
-import blogimg2 from "../images/cat2.jpg";
-import blogimg3 from "../images/cat3.jpg";
-import blogimg4 from "../images/cat4.jpg";
-import blogimg5 from "../images/cat5.jpg";
-import blogimg6 from "../images/cat6.jpg";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import BlogPage from './BlogPage';
 import "../css/Home.css";
 
 
 
 const Home = () => { 
 
+ 
+  //test
+  const [showLargeBlog, setShowLargeBlog] = useState(false);
+  const [clickedBlogId, setClickedBlogId] = useState("");
+  //test
+
      const [categoryButtonState, setCategoryButtonState] = useState(
       [{category: "All" ,state: true}, {category: "Art" ,state: false},  {category: "Engineering" ,state: false}, 
       {category: "Medical" ,state: false}, {category: "Science" ,state: false}, {category: "Technology" ,state: false}, 
       {category: "Game" ,state: false}, {category: "Video Game" ,state: false}, {category: "Cooking" ,state: false},
-       {category: "Covid-19" ,state: false}, {category: "Story" ,state: false}]
+       {category: "Covid-19" ,state: false}, {category: "Story" ,state: false}, {category: "Software" ,state: false}]
      );
+
+     const [blogs, setBlogs] = useState([]);
+
+     useEffect(() => {
+       //fetch blogs when home component is load
+       //Default category is all
+       fetchBlogsFromServer("All", 0);
+     }, []);
     
-      const blogCategoryButtonClick =  (event) => {
+      const blogCategoryButtonClick = async (event) => {
         //get clicked button category value
         const buttonCaptionText = event.target.innerHTML;
         for(let index=0; index<categoryButtonState.length; index++){
@@ -32,10 +42,20 @@ const Home = () => {
           }
         }
         setCategoryButtonState([...categoryButtonState]);
-     
+        fetchBlogsFromServer(buttonCaptionText, 0);
       }
 
-
+      const fetchBlogsFromServer = async (category, limit) => {
+          //fetch blogs from server according to category
+          //limit=0 means select all blogs
+          const url = `http://localhost:8000/blog/custom?catogery=${category}&&limit=${limit}`;
+          try {
+            const serverResponse = await axios.get(url);
+            setBlogs(serverResponse.data);
+          } catch (error) {
+            console.log(error.message)
+          }
+      }
 
    
 
@@ -43,7 +63,10 @@ const Home = () => {
       const buttonActiveState = "btn btn-outline-success category_option_button active";
 
     return(
+     
         <>
+         {showLargeBlog ?  <BlogPage blogId={clickedBlogId}   setShowLargeBlog={setShowLargeBlog}/>:
+         <>
           <section className="home_root_div">
             <div className="home_header_div d-flex justify-content-center align-items-center flex-column">
               <h1 className="home_header_heading_text">Blog-Spot</h1>
@@ -74,77 +97,21 @@ const Home = () => {
                 </>)
               })}
 
-              {/* <div className="col-lg-2 col-md-2 col-sm-4 col-6 my-2">
-                   <button type="button" className={ categoryButtonState.state1 ? buttonActiveState : buttonNormanState} onClick={blogCategoryButtonClick}>All</button>
-                </div>
-
-                <div className="col-lg-2 col-md-2 col-sm-4 col-6 my-2">
-                   <button type="button" className={ buttonState.state2 ? buttonActiveState : buttonNormanState} onClick={blogCategoryButtonClick}>Art</button>
-                </div>
-
-                <div className="col-lg-2 col-md-2 col-sm-4 col-6 my-2">
-                   <button type="button" className={ buttonState.state3 ? buttonActiveState : buttonNormanState} onClick={blogCategoryButtonClick}>Engineering</button>
-                </div>
-
-                <div className="col-lg-2 col-md-2 col-sm-4 col-6 my-2">
-                   <button type="button" className={ buttonState.state4 ? buttonActiveState : buttonNormanState} onClick={blogCategoryButtonClick}>Medical</button>
-                </div>
-
-                <div className="col-lg-2 col-md-2 col-sm-4 col-6 my-2">
-                   <button type="button" className={ buttonState.state5 ? buttonActiveState : buttonNormanState} onClick={blogCategoryButtonClick}>Science</button>
-                </div> */}
-
 
                
               </div>
               <hr className="home_hr"/>
               <div>
               <div className="row home_blog_div">
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block d-flex justify-content-center">
-              <Blog image={blogimg1}  />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg2} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg3} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg4} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg5} />
-              </div>
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg6} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block d-flex justify-content-center">
-              <Blog image={blogimg1}  />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg2} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg3} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg4} />
-              </div>
-
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg5} />
-              </div>
-              <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block  d-flex justify-content-center">
-              <Blog image={blogimg6} />
-              </div>
+              {blogs.map((value, index) => {
+                return(
+                  <>
+                   <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block d-flex justify-content-center" key={index}>
+                    <Blog blogObj={value}  setClickedBlogId={setClickedBlogId}   setShowLargeBlog={setShowLargeBlog} />
+                   </div>
+                  </>
+                );
+              })}
 
               </div>
              
@@ -154,6 +121,7 @@ const Home = () => {
          
             </div>
           </section>
+          </>}
         </>
       
     );

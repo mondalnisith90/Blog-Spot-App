@@ -8,9 +8,15 @@
 }
 
 .blog_page_profile_div {
-  padding-top: 65px;
+  padding-top: 30px;
   padding-bottom: 30px;
   background-color: #edf2f0;
+}
+
+.blogpage_back_button,
+.blogpage_close_button {
+  text-transform: capitalize !important;
+  background-color: #0b73b0 !important;
 }
 
 .blogpage_profile_pic {
@@ -69,4 +75,11 @@
 .blogpage_blog_div {
   background-color: #ffffff;
   padding: 25px;
+}
+
+.blogpage_user_info_text {
+  color: black;
+  font-size: 17px;
+  font-family: "Roboto Condensed", sans-serif;
+  padding-left: 10px;
 }
