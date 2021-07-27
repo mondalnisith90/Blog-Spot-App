@@ -6,7 +6,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
 import Tooltip from '@material-ui/core/Tooltip';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { CurrentUserDataContext } from '../App';
 import axios from "axios";
 import firebase from "../Firebase/Firebaseconfig";
 import {NavLink} from 'react-router-dom';
@@ -30,6 +31,8 @@ const reactToastStyle = {
 let defaultImage = defaultProfilePic;
 
 const MyProfile = () => {
+
+  const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
   const firebaseStorageRef = firebase.storage().ref();
   const [formInputValue, setFormInputValue] = useState({userId: "", name: "", profission: "", status: "", address: "", profile_image: "",  profile_image_url: defaultImage });
   const [updateImageButtonState, setUpdateImageButtonState] = useState(false);
@@ -71,6 +74,10 @@ const MyProfile = () => {
           profile_image_url: userData.profie_pic=="default" ? defaultProfilePic : userData.profie_pic
         });
         defaultImage = userData.profie_pic=="default" ? defaultProfilePic : userData.profie_pic;
+        //Update current user name of Navbar
+        if(userData.name != currentUserData.name){
+          setCurrentUserData({...currentUserData, name: userData.name});
+        }
       }
 
     } catch (error) {
@@ -211,6 +218,8 @@ const MyProfile = () => {
         setUpdateImageButtonState(false);
         setProgressbarState({...progressbarState, updateProfileImageProgressbar: false});
         toast.success("Profile image updated successfully.", reactToastStyle);
+        //Update profile image url on navbar
+        setCurrentUserData({...currentUserData, profileImageUrl: profileImageUrl});
       }
     } catch (error) {
       console.log(error.message);

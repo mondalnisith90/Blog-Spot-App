@@ -1,4 +1,3 @@
-import blogImg from "../images/laptop3.jpg";
 import IconButton from '@material-ui/core/IconButton';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import TextField from '@material-ui/core/TextField';
@@ -9,15 +8,30 @@ import Tooltip from '@material-ui/core/Tooltip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import firebase from "../Firebase/Firebaseconfig";
 import BlogCategoryData from "../Data/BlogCategoryData";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { CurrentUserDataContext } from '../App';
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
 import "../css/EditBlog.css";
 
-let defaultBlogImage = blogImg;
 
-const EditBlog = ({setState}) =>{
-    
+
+const reactToastStyle = {
+  position: "top-center",
+  autoClose: 2000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  };
+
+const EditBlog = ({setToggler, blogToEdit}) =>{
+  const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
+  const currentUserId = currentUserData.userId;
+  let defaultBlogImage = blogToEdit.blog_image;  
   const firebaseStorageRef = firebase.storage().ref();
-  const [formInputValue, setFormInputValue] = useState({ title: "", body: "", catogery: "", auther: "", blog_image: "",  blog_image_url: defaultBlogImage });
+  const [formInputValue, setFormInputValue] = useState({ title: blogToEdit.title, body: blogToEdit.body, catogery: blogToEdit.catogery, auther: blogToEdit.auther, blog_image: "",  blog_image_url: defaultBlogImage });
   const [updateImageButtonState, setUpdateImageButtonState] = useState(false);
   const [progressbarState, setProgressbarState] = useState({updateBlogImageProgressbarStatus: false, updateBlogInfoProgressbarStatus: false});
   const [inputFieldsError, setInputFieldsError] = useState({titleError: "", bodyError: "", catogeryError: "", autherError: "", serverError: "" });
@@ -83,15 +97,42 @@ const EditBlog = ({setState}) =>{
      //when user click to update the blog
      if(formValidation()){
        //Update blog data on server
-       alert("all ok here...");
+       setProgressbarState({...progressbarState, updateBlogInfoProgressbarStatus: true});
+       updateBlogInfoOnServer();
      }
-     
    }
+
+
+   const updateBlogInfoOnServer = async () => {
+      //Update blog Information on server
+    try {
+      const url = `http://localhost:8000/blog?blogId=${blogToEdit._id}&&uid=${currentUserId}`;
+      const data = {
+        title: title,
+        body: body,
+        catogery: catogery,
+        auther: auther
+      }
+      const serverResponse = await axios.put(url, data, {withCredentials: true});
+      if(serverResponse.status == 200){
+        //Blog Information updated successfully
+        setProgressbarState({...progressbarState, updateBlogInfoProgressbarStatus: false});
+        toast.success("Blog updated successfully", reactToastStyle);
+        console.log("update update",serverResponse.data)
+      }
+    } catch (error) {
+      //Blog information not update
+      setProgressbarState({...progressbarState, updateBlogInfoProgressbarStatus: false});
+      toast.error("Blog not update", reactToastStyle);
+    }
+   }
+
 
    const cancelBlogInfoButtonClick = () => {
      //when user click cancel button
      //go back to the MyBlog component
-     setState(true);
+     //Hide EditBlog.jsx and show or render MyBlogBlog.jsx
+     setToggler(true);
    }
 
     
@@ -143,13 +184,26 @@ const EditBlog = ({setState}) =>{
 
 
   
-  const updateBlogImageUrlOnServer = async (profileImageUrl) => {
-    //send blog image url on serev
-    alert(profileImageUrl);
-    defaultBlogImage = profileImageUrl;
-    setFormInputValue({...formInputValue, blog_image_url: profileImageUrl});
-    setUpdateImageButtonState(false);
-    setProgressbarState({...progressbarState, updateBlogImageProgressbarStatus: false});
+  const updateBlogImageUrlOnServer = async (blogImageUrl) => {
+    //Update blog image url on server
+    try {
+      const url = `http://localhost:8000/blog?blogId=${blogToEdit._id}&&uid=${currentUserId}`;
+      const data = {
+        blog_image: blogImageUrl
+      }
+      const serverResponse = await axios.put(url, data, {withCredentials: true});
+      if(serverResponse.status == 200){
+        //Blog image url updated successfully
+        defaultBlogImage = blogImageUrl;
+        setFormInputValue({...formInputValue, blog_image_url: blogImageUrl});
+        setUpdateImageButtonState(false);
+        setProgressbarState({...progressbarState, updateBlogImageProgressbarStatus: false});
+        toast.success("Blog image updated successfully", reactToastStyle);
+      }
+    } catch (error) {
+      setProgressbarState({...progressbarState, updateBlogImageProgressbarStatus: false});
+      toast.error("Blog image not update", reactToastStyle);
+    }
   }
 
 
@@ -157,6 +211,12 @@ const EditBlog = ({setState}) =>{
     return(
         <>
          <div className="editblog_root_div">
+         <ToastContainer />
+         <div className="text-center">
+            <Tooltip title="Cancel">
+              <CancelIcon className="editblog_close_icon" onClick={cancelBlogInfoButtonClick}/>
+              </Tooltip>
+             </div>
              <div>
                <img src={blog_image_url} alt="" className="editblog_image" />
                <div className="d-flex justify-content-start align-items-center">
@@ -218,6 +278,7 @@ const EditBlog = ({setState}) =>{
                   <option value="Cooking" />
                   <option value="Software" />
                   <option value="Computer" />
+                  <option value="Art" />
                 </datalist>
                 <span className="input_error_span ml-2">{catogeryError}</span>
                 </div>
@@ -235,7 +296,7 @@ const EditBlog = ({setState}) =>{
                   shrink: true,
                   }} />
                   <span className="input_error_span ml-2">{autherError}</span>
-                  <div className="d-flex justify-content-start mt-4">
+                  <div className="d-flex justify-content-start align-items-center mt-4">
                    <div>
                    <Button variant="contained" color="secondary" onClick={cancelBlogInfoButtonClick} className="editblog_cancel_button" startIcon={<CancelIcon />  } >
                     Cancel
@@ -245,6 +306,9 @@ const EditBlog = ({setState}) =>{
                    <Button variant="contained" color="secondary"  onClick={saveBlogInfoButtonClick} className="editblog_save_button ml-4" startIcon={<SaveIcon />} >
                     Save
                   </Button>
+                   </div>
+                   <div>
+                   {progressbarState.updateBlogInfoProgressbarStatus ? <CircularProgress color="primary" className="ml-5" /> : null }
                    </div>
                   </div>
 

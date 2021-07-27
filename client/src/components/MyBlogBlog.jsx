@@ -1,14 +1,17 @@
-import blogImg from "../images/laptop3.jpg";
 import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import "../css/MyBlogBlog.css";
 
 
-const MyBlogBlog = ({setState}) => {
+const MyBlogBlog = ({setToggler, blog, setBlogToEdit}) => {
 
-  const editClick = () => {
-    setState(false);
+  const blogEditIconClick = () => {
+    //set blog to edit
+    setBlogToEdit(blog);
+    //Hide MyBlogBlog.jsx and show or render EditBlog.jsx
+    setToggler(false);
+
   }
 
 
@@ -23,15 +26,15 @@ const MyBlogBlog = ({setState}) => {
     return(
         <>
         <div className="my-5">
-          <img src={blogImg} alt="" className="myblogblog_blog_image" />
+          <img src={blog.blog_image} alt="" className="myblogblog_blog_image" />
           <div className="myblogblog_blog_body">
             <div className="myblogblog_body_header_div d-flex justify-content-between">
             <div>
-            <p className="myblogblog_auther_name_text">Category: Cooking</p>
+            <p className="myblogblog_auther_name_text">Category: {blog.catogery}</p>
             </div>
             <div>
               <Tooltip title="Edit blog">
-              <EditIcon className="myblogblog_edit_icon" onClick={editClick}/>
+              <EditIcon className="myblogblog_edit_icon" onClick={blogEditIconClick}/>
               </Tooltip>
                 <Tooltip title="Delete blog">
                 <DeleteIcon className="myblogblog_delete_icon" onClick={deleteBlogButtonClick} />
@@ -39,17 +42,12 @@ const MyBlogBlog = ({setState}) => {
                
             </div>
             <div>
-            <p className="myblogblog_published_date_text">4 days  ago</p>
+            <p className="myblogblog_published_date_text">Publish on {blog.publish_date}</p>
             </div>
             </div>
-            <h2 className="myblogblog_blog_title">Checken Chue delicius recipy</h2>
+            <h2 className="myblogblog_blog_title">{blog.title}</h2>
             <p className="myblogblog_blog_description">
-            Anthropologist Richard Wrangham has proposed cooking arose before 1.8 million years ago, an invention of
-            our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
-            our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
-            Anthropologist Richard Wrangham has proposed cooking arose before 1.8 million years ago, an invention of
-            our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
-            our evolutionary ancestors. If the custom emerged this early, it could explain a defining feature of our
+             {blog.body}
             </p>
           </div>
           </div>

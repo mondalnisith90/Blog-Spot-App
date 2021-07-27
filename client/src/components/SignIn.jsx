@@ -8,8 +8,9 @@ import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {NavLink} from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useHistory } from 'react-router';
+import { CurrentUserDataContext } from '../App';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import "../css/SignIn.css";
@@ -27,6 +28,8 @@ const reactToastStyle = {
 
 
 const SignIn = () => {
+
+  const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
 
   const [inputFieldsData, setInputFieldsData] = useState({ email: "", password: ""});
   const [serverError, setServerError] = useState("");
@@ -50,6 +53,7 @@ const SignIn = () => {
       if(serverResponse.status===200){
         //user ogin successfull
         toast.success("Login successfull", reactToastStyle);
+        setCurrentUserData({...currentUserData, userLoginStatus: true});
         setTimeout(() => {
           history.push("/");
         }, 2300);

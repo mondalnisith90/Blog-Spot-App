@@ -42,3 +42,15 @@
   color: #e3ac05;
   margin-top: 10px;
 }
+
+.myblogs_user_info_text {
+  color: black;
+  font-size: 17px;
+  font-family: "Roboto Condensed", sans-serif;
+  padding-left: 10px;
+}
+
+.myblogs_hr {
+  background-color: black !important;
+  height: 2px !important;
+}

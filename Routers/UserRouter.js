@@ -99,7 +99,7 @@ UserRouter.post("/users/login", async (req, res) => {
     }
 });
 
-UserRouter.get("/users/logout", (req, res)=>{
+UserRouter.get("/users/logout", UserAuth, (req, res)=>{
     res.clearCookie("user_token");
     res.status(200).json("User logout successfull");
 });

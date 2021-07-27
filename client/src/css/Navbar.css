@@ -27,3 +27,15 @@
   color: black !important;
   font-weight: 500 !important;
 }
+
+.profile_pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* border: cadetblue solid 3px; */
+  margin-top: 3px;
+  overflow: hidden;
+  display: inline-block;
+  margin-left: 20px;
+}

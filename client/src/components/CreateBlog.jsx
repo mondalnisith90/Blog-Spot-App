@@ -2,10 +2,10 @@ import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import Button from '@material-ui/core/Button';
 import SendIcon from '@material-ui/icons/Send';
 import {NavLink} from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { CurrentUserDataContext } from '../App';
 import BlogCategoryData from "../Data/BlogCategoryData";
 import firebase from "../Firebase/Firebaseconfig";
-import validator from 'validator';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -24,9 +24,12 @@ const reactToastStyle = {
   };
 
 //for testing perpose 
-const userId = "60fe529791ea180514755c5d";
 
 const CreateBlog = () => {
+
+  const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
+  //Current user id
+  const userId = currentUserData.userId;
   const firebaseStorageRef = firebase.storage().ref();
     const [formInputValue, setFormInputValue] = useState({ title: "", body: "", catogery: "",  blog_image: "", auther: "", auther_id: userId });
           const [inputFieldsError, setInputFieldsError] = useState({

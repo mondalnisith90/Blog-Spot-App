@@ -1,7 +1,7 @@
 import Blog from "./Blog";
 import BlogCategoryData from "../Data/BlogCategoryData";
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import BlogPage from './BlogPage';
 import "../css/Home.css";
@@ -9,6 +9,7 @@ import "../css/Home.css";
 
 
 const Home = () => { 
+
 
  
   //test
@@ -43,6 +44,7 @@ const Home = () => {
         }
         setCategoryButtonState([...categoryButtonState]);
         fetchBlogsFromServer(buttonCaptionText, 0);
+
       }
 
       const fetchBlogsFromServer = async (category, limit) => {

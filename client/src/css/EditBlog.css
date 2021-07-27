@@ -1,6 +1,6 @@
 .editblog_root_div {
   width: 100%;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 .editblog_image {
@@ -28,4 +28,10 @@
   margin-bottom: 20px !important;
   text-transform: capitalize !important;
   background-color: #e30552 !important;
+}
+
+.editblog_close_icon {
+  color: #e30552 !important;
+  font-size: 35px !important;
+  cursor: pointer;
 }

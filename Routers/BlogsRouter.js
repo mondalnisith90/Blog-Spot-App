@@ -39,6 +39,16 @@ BlogsRouter.get("/blog", async (req, res) => {
     }
 });
 
+BlogsRouter.get("/blog/myblogs", UserAuth, async (req, res) => {
+    try {
+        const auther_id = req.query.auther_id;
+        const dbResponse = await Blog.find({auther_id});
+        res.status(200).json(dbResponse);
+    } catch (error) {
+        res.status(400).json(error.message);
+    }
+});
+
 BlogsRouter.get("/blog/custom", async (req, res) => {
     //Get blogs by blog catogery and also set limit
     try {
