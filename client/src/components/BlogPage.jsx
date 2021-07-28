@@ -7,55 +7,28 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Button from '@material-ui/core/Button';
 import "../css/BlogPage.css";
 
-const BlogPage = ({blogId, setShowLargeBlog }) => {
+const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
 
-    // const {blogId} = useParams();
+    const auther_id = clickedBlogInfo.auther_id;
     const [autherData, setAutherData] = useState({autherName: "", profile_pic: defaultProfilePic, address: "", status: "", profission: ""});
-    const [blogData, setBlogData] = useState({title: "", body: "", category: "", blog_image_url: "", publish_date: "", auther: "", auther_id: "",});
-    const {title, body, category, blog_image_url, publish_date, auther, auther_id} = blogData;
+    const [autherBlogs, setAutherBlogs] = useState([clickedBlogInfo]);
     const {autherName, profile_pic, address, status, profission} = autherData;
 
 
 
 
     const closeBackButtonClick = () => {
-        //hide BlogPage.jsx and show Home.jsx
-        setShowLargeBlog(false);
-    }
-
-    const buttonClick = () => {
+        //To toggle between Home.jsx and BlogPage.jsx
+        //If homeBlogPageToggler = false, then Home.jsx will render and BlogPage.jsx will hide
+        sethomeBlogPageToggler(false);
     }
 
     useEffect(() => {
-        if(blogId){
+        if(clickedBlogInfo.auther_id){
             //means blogId is not blank or null
-            fetchBlogDataFromServer(blogId);
+            fetchBlogAutherDataFromServer(auther_id);
         }
-    }, [blogId]);
-    const fetchBlogDataFromServer = async (blogId) => {
-        try {
-            const url = `http://localhost:8000/blog?blogId=${blogId}`;
-            console.log("Blog page server response nisith blog id is", blogId)
-            const serverResponse = await axios.get(url);
-            console.log("Blog page server response nisith", serverResponse)
-            if(serverResponse.status == 200){
-                const blogInfo = serverResponse.data;
-                setBlogData({
-                    title: blogInfo.title,
-                    body: blogInfo.body,
-                    category: blogInfo.catogery,
-                    blog_image_url: blogInfo.blog_image,
-                    publish_date: blogInfo.publish_date,
-                    auther: blogInfo.auther,
-                    auther_id: blogInfo.auther_id
-                });
-             //Now fetch Blog Auther Data from server
-             fetchBlogAutherDataFromServer(blogInfo.auther_id);
-            }
-        } catch (error) {
-            console.log("Error", error.message);
-        }
-    }
+    }, [auther_id]);
 
 
     const fetchBlogAutherDataFromServer = async (autherId) => {
@@ -76,6 +49,27 @@ const BlogPage = ({blogId, setShowLargeBlog }) => {
 
         } catch (error) {
             console.log("Error", error.message);
+        }
+    }
+
+    const moreBlogsAutherButtonClick = () => {
+        //When more blogs of this auther button clicked
+        //Fetch more blogs of clicked blog auther
+        fetchBlogsByAutherId(auther_id);
+    }
+
+
+    const fetchBlogsByAutherId = async () => {
+        try {
+            const url = `http://localhost:8000/blog/myblogs?auther_id=${auther_id}`;
+            const serverResponse = await axios.get(url);
+            if(serverResponse.status == 200){
+              //Data is available
+              setAutherBlogs(serverResponse.data);
+            }
+        } catch (error) {
+            //Data not available. Some error occers
+
         }
     }
 
@@ -100,38 +94,40 @@ const BlogPage = ({blogId, setShowLargeBlog }) => {
                <p className="blogpage_profile_name">{autherName}</p>
             <hr className="myprofile_hr mt-5" />
             <div className="text-start">
-            <p className="blogpage_user_info_text">Name: {autherName}</p>  <hr className="myprofile_hr" />
+            <p className="blogpage_user_info_text">Auther Name: {autherName}</p>  <hr className="myprofile_hr" />
             <p className="blogpage_user_info_text">Profission: {profission}</p>  <hr className="myprofile_hr" />
              <p className="blogpage_user_info_text">Status: {status}</p>  <hr className="myprofile_hr" />
              <p className="blogpage_user_info_text">Address: {address}</p>  <hr className="myprofile_hr" />
             </div>
-              
-
-               <div className=" mt-4">
-               <button type="button" className="btn btn-outline-success" onClick={buttonClick}>View More Blogs of This Auther</button>
+            <div className=" mt-4">
+             <button type="button" className="btn btn-outline-success" onClick={moreBlogsAutherButtonClick}>View More Blogs of This Auther</button>
             </div> 
-
-            
-
            </div>
 
            <div className="col-lg-9 col-md-9 col-sm-12 col-12 blogpage_blog_div ">
-           <img src={blog_image_url} alt="" className="blogpage_blog_image" />
-           <div className="blogpage_blog_body">
-             <div className="blogpage_body_header_div d-flex justify-content-between">
-             <div>
-             <p className="blogpage_auther_name_text">Category: {category}</p>
-             </div>
-             <div>
-             <p className="blogpage_published_date_text">{publish_date}</p>
-             </div>
-             </div>
-             <h2 className="blogpage_blog_title">{title}</h2>
-             <p className="blogpage_blog_description">
-              {body}
-             </p>
-           </div>
-           </div>
+                  {autherBlogs.map((value, index) => {
+                    return(<>
+                    <div  key={index}>
+                    <img src={value.blog_image} alt="" className="blogpage_blog_image" />
+                    <div className="blogpage_blog_body">
+                      <div className="blogpage_body_header_div d-flex justify-content-between">
+                      <div>
+                      <p className="blogpage_auther_name_text">Category: {value.catogery}</p>
+                      </div>
+                      <div>
+                      <p className="blogpage_published_date_text">{value.publish_date}</p>
+                      </div>
+                      </div>
+                      <h2 className="blogpage_blog_title">{value.title}</h2>
+                      <p className="blogpage_blog_description">
+                       {value.body}
+                      </p>
+                    </div>
+                    </div>
+                    </>) })}
+            </div>
+                  
+
 
             </div>
          </section>

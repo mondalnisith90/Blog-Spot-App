@@ -4,18 +4,13 @@ import { NavLink } from "react-router-dom";
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import BlogPage from './BlogPage';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import "../css/Home.css";
 
 
 
 const Home = () => { 
 
-
- 
-  //test
-  const [showLargeBlog, setShowLargeBlog] = useState(false);
-  const [clickedBlogId, setClickedBlogId] = useState("");
-  //test
 
      const [categoryButtonState, setCategoryButtonState] = useState(
       [{category: "All" ,state: true}, {category: "Art" ,state: false},  {category: "Engineering" ,state: false}, 
@@ -24,7 +19,15 @@ const Home = () => {
        {category: "Covid-19" ,state: false}, {category: "Story" ,state: false}, {category: "Software" ,state: false}]
      );
 
+     const [progressbarState, setProgressbarState] = useState(false);
+     const [blogNotFoundErrorState, setBlogNotFoundErrorState] = useState(false);
      const [blogs, setBlogs] = useState([]);
+      //To toggle between Home.jsx and BlogPage.jsx
+     //If homeBlogPageToggler = false, then Home.jsx will render and BlogPage.jsx will hide
+     //If homeBlogPageToggler = true, then Home.jsx will hide and BlogPage.jsx will render
+     const [homeBlogPageToggler, sethomeBlogPageToggler] = useState(false);
+     //The blog information which is clicked by User of Home page.
+     const [clickedBlogInfo, setClickedBlogInfo] = useState("");
 
      useEffect(() => {
        //fetch blogs when home component is load
@@ -50,11 +53,15 @@ const Home = () => {
       const fetchBlogsFromServer = async (category, limit) => {
           //fetch blogs from server according to category
           //limit=0 means select all blogs
+          setProgressbarState(true);
           const url = `http://localhost:8000/blog/custom?catogery=${category}&&limit=${limit}`;
           try {
             const serverResponse = await axios.get(url);
             setBlogs(serverResponse.data);
+            setBlogNotFoundErrorState(serverResponse.data.length ? false : true);
+            setProgressbarState(false);
           } catch (error) {
+            setProgressbarState(false);
             console.log(error.message)
           }
       }
@@ -67,7 +74,7 @@ const Home = () => {
     return(
      
         <>
-         {showLargeBlog ?  <BlogPage blogId={clickedBlogId}   setShowLargeBlog={setShowLargeBlog}/>:
+         {homeBlogPageToggler ?  <BlogPage clickedBlogInfo={clickedBlogInfo}   sethomeBlogPageToggler={sethomeBlogPageToggler}/>:
          <>
           <section className="home_root_div">
             <div className="home_header_div d-flex justify-content-center align-items-center flex-column">
@@ -103,13 +110,18 @@ const Home = () => {
                
               </div>
               <hr className="home_hr"/>
+              <div style={{height: "3px"}}>
+              {progressbarState ? <LinearProgress color="secondary" /> : null }
+              </div>
+               
               <div>
               <div className="row home_blog_div">
+               {blogNotFoundErrorState ? <h1 className="home_blog_not_found_error">OOPS! No blog found of this category</h1> : null }
               {blogs.map((value, index) => {
                 return(
                   <>
                    <div className="col-lg-4 col-md-6 col-sm-12 col-12 m-auto d-block d-flex justify-content-center" key={index}>
-                    <Blog blogObj={value}  setClickedBlogId={setClickedBlogId}   setShowLargeBlog={setShowLargeBlog} />
+                    <Blog blogObj={value}  setClickedBlogInfo={setClickedBlogInfo}   sethomeBlogPageToggler={sethomeBlogPageToggler} />
                    </div>
                   </>
                 );

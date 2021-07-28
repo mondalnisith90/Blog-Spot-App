@@ -1,16 +1,12 @@
-// import image from "../images/cat2.jpg";
-import {useHistory} from 'react-router-dom';
-import BlogPage from './BlogPage';
 import "../css/Blog.css";
 
 
-const Blog = ({blogObj, setClickedBlogId, setShowLargeBlog}) => {
-    const history = useHistory();
+const Blog = ({blogObj, setClickedBlogInfo, sethomeBlogPageToggler}) => {
     const onBlogClick = () => {
-        // history.push(`/single-blog/${blogObj._id}`);
-      // return ( <BlogPage blogId={blogObj._id} />);
-      setClickedBlogId(blogObj._id);
-      setShowLargeBlog(true);
+      setClickedBlogInfo(blogObj);
+      //To toggle between Home.jsx and BlogPage.jsx
+      //If homeBlogPageToggler = true, then Home.jsx will hide and BlogPage.jsx will render
+      sethomeBlogPageToggler(true);
        
     }
 

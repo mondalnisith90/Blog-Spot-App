@@ -26,7 +26,7 @@ const reactToastStyle = {
   progress: undefined,
   };
 
-const EditBlog = ({setToggler, blogToEdit}) =>{
+const EditBlog = ({setToggler, blogToEdit, fetchBlogsFromServer}) =>{
   const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
   const currentUserId = currentUserData.userId;
   let defaultBlogImage = blogToEdit.blog_image;  
@@ -71,7 +71,7 @@ const EditBlog = ({setToggler, blogToEdit}) =>{
   }
   let isValidCategory = false;
   BlogCategoryData.map((value => {
-    if(value === catogery){
+    if(value.toLowerCase() == catogery.toLowerCase()){
       isValidCategory = true;
     }
   }));
@@ -118,7 +118,9 @@ const EditBlog = ({setToggler, blogToEdit}) =>{
         //Blog Information updated successfully
         setProgressbarState({...progressbarState, updateBlogInfoProgressbarStatus: false});
         toast.success("Blog updated successfully", reactToastStyle);
-        console.log("update update",serverResponse.data)
+        //Blog information updated successfully. So again fetch all blogs of this current user from server to see changes
+        //This fetchBlogsFromServer() method is belong to MyBlogs.jsx component
+        fetchBlogsFromServer();
       }
     } catch (error) {
       //Blog information not update
@@ -126,6 +128,7 @@ const EditBlog = ({setToggler, blogToEdit}) =>{
       toast.error("Blog not update", reactToastStyle);
     }
    }
+
 
 
    const cancelBlogInfoButtonClick = () => {
@@ -199,6 +202,9 @@ const EditBlog = ({setToggler, blogToEdit}) =>{
         setUpdateImageButtonState(false);
         setProgressbarState({...progressbarState, updateBlogImageProgressbarStatus: false});
         toast.success("Blog image updated successfully", reactToastStyle);
+        //Blog image updated successfully. So again fetch all blogs of this current user from server to see changes
+        //This fetchBlogsFromServer() method is belong to MyBlogs.jsx component
+        fetchBlogsFromServer();
       }
     } catch (error) {
       setProgressbarState({...progressbarState, updateBlogImageProgressbarStatus: false});

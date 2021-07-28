@@ -106,3 +106,12 @@
   color: black;
   /* border: 2px solid #c70479; */
 }
+
+.home_blog_not_found_error {
+  text-align: center;
+  color: #e60541;
+  font-size: 26px;
+  font-family: "Oswald", sans-serif;
+  margin-bottom: 200px;
+  margin-top: 60px;
+}

@@ -4,8 +4,10 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import "../css/MyBlogs.css";
 import { useState, useEffect, useContext } from "react";
 import { CurrentUserDataContext } from "../App";
+import DefaultPage from "./DefaultPage";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const MyBlogs = () => {
 
@@ -20,6 +22,7 @@ const MyBlogs = () => {
     const [toggler, setToggler] = useState(true);
     //Blog Id to be edit in EditBlog.jsx
     const [blogToEdit, setBlogToEdit] = useState("");
+    const [progressbarState, setProgressbarState] = useState(false);
 
     useEffect(()=>{
         //fetch current user all blogs
@@ -28,16 +31,18 @@ const MyBlogs = () => {
 
     const fetchBlogsFromServer = async () => {
         //fetch current user blog from server
+        setProgressbarState(true);
         try {
-            console.log("currentUserData.userId ",currentUserData.userId);
             const url = `http://localhost:8000/blog/myblogs?auther_id=${currentUserData.userId}`;
             const serverResponse = await axios.get(url, {withCredentials: true});
             if(serverResponse.status == 200){
                 //data is available
                 setMyBlogs(serverResponse.data);
             }
+            setProgressbarState(false);
         } catch (error) {
             //Data not available 
+            setProgressbarState(false);
             console.log(error.message);
         }
     }
@@ -50,15 +55,18 @@ const MyBlogs = () => {
 
     return(
         <>
+        {currentUserData.userLoginStatus ?
+        <>
         <section className="myblogs_root_div">
          <div className="row myblogs_main_div">
+         
           <div className="col-lg-3 col-md-3 col-sm-12 col-12  text-center myblogs_profile_div " >
-          <div>
+          <diV>
               <img src={currentUserData.profileImageUrl} alt="" className="myblogs_profile_pic" />
               <p className="myblogs_profile_name">{currentUserData.name}</p>
               <hr className="myblogs_hr mt-2" />
               <div className="text-start">
-              <p className="myblogs_user_info_text">Name: {currentUserData.name}</p>  <hr className="myblogs_hr" />
+              <p className="myblogs_user_info_text">Auther Name: {currentUserData.name}</p>  <hr className="myblogs_hr" />
               <p className="myblogs_user_info_text">Profission: {currentUserData.profission}</p>  <hr className="myblogs_hr" />
                <p className="myblogs_user_info_text">Status: {currentUserData.status}</p>  <hr className="myblogs_hr" />
                <p className="myblogs_user_info_text">Address: {currentUserData.address}</p>  <hr className="myblogs_hr" />
@@ -68,23 +76,28 @@ const MyBlogs = () => {
               <button type="button" className="btn btn-outline-success" onClick={viewProfileButtonClick}>View Profile</button>
               </div>
               <div>
-              <p  className="myblog_profile_text">Total Blogs: 7</p>
+              <p  className="myblog_profile_text">Total Blogs: {myBlogs.length}</p>
               </div>
               </div>
-              </div> 
+              </diV>
           </div>
 
           <div className="col-lg-9 col-md-9 col-sm-12 col-12  myblogs_blog_div">
+          <div className="mt-5">
+          {progressbarState ? <LinearProgress color="secondary" /> : null }
+          </div>
+         
           {toggler ? 
           <>
            {myBlogs.map( (value, index) => {
-              return (<MyBlogBlog setToggler={setToggler} blog={value} key={index} setBlogToEdit={setBlogToEdit} />);
+              return (<MyBlogBlog setToggler={setToggler} blog={value} key={index} setBlogToEdit={setBlogToEdit} fetchBlogsFromServer={fetchBlogsFromServer}/>);
            })}
           </> : 
-            <EditBlog setToggler={setToggler} blogToEdit={blogToEdit} /> }
+            <EditBlog setToggler={setToggler} blogToEdit={blogToEdit}  fetchBlogsFromServer={fetchBlogsFromServer} /> }
           </div>
            </div> 
         </section>
+        </> : <DefaultPage title={"To see your blogs you have to SignUp or Login first."} /> }
        </>
     );
 }

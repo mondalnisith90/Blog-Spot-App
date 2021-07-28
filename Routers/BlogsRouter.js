@@ -39,7 +39,7 @@ BlogsRouter.get("/blog", async (req, res) => {
     }
 });
 
-BlogsRouter.get("/blog/myblogs", UserAuth, async (req, res) => {
+BlogsRouter.get("/blog/myblogs", async (req, res) => {
     try {
         const auther_id = req.query.auther_id;
         const dbResponse = await Blog.find({auther_id});

@@ -4,6 +4,7 @@ import SendIcon from '@material-ui/icons/Send';
 import {NavLink} from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { CurrentUserDataContext } from '../App';
+import DefaultPage from './DefaultPage';
 import BlogCategoryData from "../Data/BlogCategoryData";
 import firebase from "../Firebase/Firebaseconfig";
 import { ToastContainer, toast } from 'react-toastify';
@@ -177,6 +178,8 @@ const CreateBlog = () => {
         
     return(
         <>
+         {currentUserData.userLoginStatus ?
+           <>
            <section className="create_blog_root_div d-flex justify-content-center">
              <div className="create_blog_main_div shadow">
              <div className="create_blog_heading_div">
@@ -242,8 +245,8 @@ const CreateBlog = () => {
                  </div>
                 </form>
              </div>
-            
           </section>
+          </> : <DefaultPage title={"To publish blogs you have to SignUp or Login first."} /> }
         </>
     );
 }

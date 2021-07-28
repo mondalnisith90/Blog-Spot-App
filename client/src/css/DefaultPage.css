@@ -1,0 +1,20 @@
+.defaultpage_root_div {
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 20px 20px 20px;
+}
+
+.defaultpage_signup_button,
+.defaultpage_signin_button {
+  text-transform: capitalize !important;
+  background-color: #0c6282 !important;
+  color: white !important;
+  font-size: 18px !important;
+  width: 120px !important;
+}
+
+.defaultpage_text {
+  color: #eb0c74;
+  font-size: 26px;
+  font-family: "Oswald", sans-serif;
+}

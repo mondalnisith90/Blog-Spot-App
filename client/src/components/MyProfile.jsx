@@ -14,6 +14,7 @@ import {NavLink} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import defaultProfilePic from '../Data/ProjectData';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import DefaultPage from './DefaultPage';
 import "../css/MyProfile.css";
 
 
@@ -38,6 +39,7 @@ const MyProfile = () => {
   const [updateImageButtonState, setUpdateImageButtonState] = useState(false);
   const [progressbarState, setProgressbarState] = useState({updateProfileImageProgressbar: false, updateProfileInfoProgressbar: false});
   const [inputFieldsError, setInputFieldsError] = useState({nameError: ""});
+
 
 
   const {userId, name, profission, status, address, profile_image, profile_image_url} = formInputValue;
@@ -231,7 +233,10 @@ const MyProfile = () => {
 
     return(
         <>
+    {currentUserData.userLoginStatus ? 
+       <>    
          <section className="myprofile_root_div d-flex justify-content-center">
+     
          <div className="myprofile_main_div shadow">
          <ToastContainer />
          <div className="text-center bg-light header_div_style p-4">
@@ -404,7 +409,13 @@ const MyProfile = () => {
                </div>
 
          </div>
+        
+
          </section>
+         </> 
+         : <DefaultPage title={"To see your profile, first SignUp or Login."} />}
+
+
         </>
     );
 }
