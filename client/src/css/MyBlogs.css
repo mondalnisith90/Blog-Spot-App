@@ -3,6 +3,7 @@
   background-color: #ffffff;
 }
 .myblogs_main_div {
+  width: 100%;
   background-color: #edf2f0;
   padding: 40px 10px 10px 10px;
 }
@@ -31,8 +32,7 @@
 
 .myblogs_blog_div {
   background-color: #ffffff;
-  padding: 25px;
-  padding-top: 0px;
+  padding: 10px;
 }
 
 .myblog_profile_text {
@@ -53,4 +53,13 @@
 .myblogs_hr {
   background-color: black !important;
   height: 2px !important;
+}
+
+.myblog_not_found_error {
+  text-align: center;
+  color: #e60541;
+  font-size: 26px;
+  font-family: "Oswald", sans-serif;
+  margin-bottom: 200px;
+  margin-top: 60px;
 }

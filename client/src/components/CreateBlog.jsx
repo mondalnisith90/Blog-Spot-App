@@ -225,7 +225,7 @@ const CreateBlog = () => {
                  <span className="input_error_span" >{blogImageError}</span>
                </div>
                <div className="row my-4">
-                <div className="col-md-6 d-flex justify-content-around align-items-center">
+                <div className="col-md-6 d-flex justify-content-between align-items-center">
                 <div>
                   <Button variant="contained" type="submit" color="primary" className="create_blog_button"  endIcon={<SendIcon />} >
                     Publish Blog

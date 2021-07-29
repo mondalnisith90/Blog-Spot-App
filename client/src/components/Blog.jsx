@@ -2,6 +2,8 @@ import "../css/Blog.css";
 
 
 const Blog = ({blogObj, setClickedBlogInfo, sethomeBlogPageToggler}) => {
+  //Blog published date. Convert ISO time zone to normal date
+  const date = new Date(blogObj.publish_date);
     const onBlogClick = () => {
       setClickedBlogInfo(blogObj);
       //To toggle between Home.jsx and BlogPage.jsx
@@ -20,7 +22,7 @@ const Blog = ({blogObj, setClickedBlogInfo, sethomeBlogPageToggler}) => {
             <p className="auther_name_text">Auther: {blogObj.auther}</p>
              </div>
              <div>
-             <p className="published_date_text">{blogObj.publish_date}</p>
+             <p className="published_date_text">Publish on {`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`}</p>
              </div>
              </div>
              <h2 className="blog_title">{blogObj.title}</h2>

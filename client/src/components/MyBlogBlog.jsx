@@ -23,6 +23,8 @@ const MyBlogBlog = ({setToggler, blog, setBlogToEdit, fetchBlogsFromServer}) => 
 
   const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
   const currentUserId = currentUserData.userId;
+  //Blog published date. Convert ISO time zone to normal date
+  const date = new Date(blog.publish_date);
   const blogEditIconClick = () => {
     //set blog to edit
     setBlogToEdit(blog);
@@ -60,11 +62,11 @@ const MyBlogBlog = ({setToggler, blog, setBlogToEdit, fetchBlogsFromServer}) => 
           <ToastContainer />
           <img src={blog.blog_image} alt="" className="myblogblog_blog_image" />
           <div className="myblogblog_blog_body">
-            <div className="myblogblog_body_header_div d-flex justify-content-between">
-            <div>
+            <div className="row myblogblog_body_header_div d-flex justify-content-between">
+            <div className="col-md-4 col-sm-4 col-12 order-sm-1 order-2">
             <p className="myblogblog_auther_name_text">Category: {blog.catogery}</p>
             </div>
-            <div>
+            <div  className="col-md-4 col-sm-4 col-12 text-sm-center text-center mb-2  order-sm-2 order-1">
               <Tooltip title="Edit blog">
               <EditIcon className="myblogblog_edit_icon" onClick={blogEditIconClick}/>
               </Tooltip>
@@ -73,8 +75,8 @@ const MyBlogBlog = ({setToggler, blog, setBlogToEdit, fetchBlogsFromServer}) => 
                 </Tooltip>
                
             </div>
-            <div>
-            <p className="myblogblog_published_date_text">Publish on {blog.publish_date}</p>
+            <div  className="col-md-4 col-sm-4 col-12  order-sm-3 order-3">
+              <p className="myblogblog_published_date_text">Publish on  {`  ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`}</p>
             </div>
             </div>
             <h2 className="myblogblog_blog_title">{blog.title}</h2>

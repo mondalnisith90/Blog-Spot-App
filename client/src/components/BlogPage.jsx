@@ -5,6 +5,7 @@ import defaultProfilePic from "../Data/ProjectData";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import "../css/BlogPage.css";
 
 const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
@@ -12,6 +13,7 @@ const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
     const auther_id = clickedBlogInfo.auther_id;
     const [autherData, setAutherData] = useState({autherName: "", profile_pic: defaultProfilePic, address: "", status: "", profission: ""});
     const [autherBlogs, setAutherBlogs] = useState([clickedBlogInfo]);
+    const [progressbarState, setProgressbarState] = useState(false);
     const {autherName, profile_pic, address, status, profission} = autherData;
 
 
@@ -33,10 +35,12 @@ const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
 
     const fetchBlogAutherDataFromServer = async (autherId) => {
         try {
+            setProgressbarState(true);
             const url = `http://localhost:8000/users?uid=${autherId}`;
             const serverResponse = await axios.get(url);
             if(serverResponse.status == 200){
                 //Auther data is available
+                setProgressbarState(false);
                 const autherInfo = serverResponse.data;
                 setAutherData({
                     autherName: autherInfo.name,
@@ -48,7 +52,7 @@ const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
             }
 
         } catch (error) {
-            console.log("Error", error.message);
+            setProgressbarState(false);
         }
     }
 
@@ -61,15 +65,17 @@ const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
 
     const fetchBlogsByAutherId = async () => {
         try {
+            setProgressbarState(true);
             const url = `http://localhost:8000/blog/myblogs?auther_id=${auther_id}`;
             const serverResponse = await axios.get(url);
             if(serverResponse.status == 200){
               //Data is available
               setAutherBlogs(serverResponse.data);
             }
+            setProgressbarState(false);
         } catch (error) {
             //Data not available. Some error occers
-
+            setProgressbarState(false);
         }
     }
 
@@ -105,17 +111,20 @@ const BlogPage = ({clickedBlogInfo, sethomeBlogPageToggler }) => {
            </div>
 
            <div className="col-lg-9 col-md-9 col-sm-12 col-12 blogpage_blog_div ">
+               {progressbarState ? <LinearProgress color="secondary" className="my-2" /> : null }
                   {autherBlogs.map((value, index) => {
+                    //Blog published date. Convert ISO time zone to normal date
+                    const date = new Date(value.publish_date);
                     return(<>
                     <div  key={index}>
                     <img src={value.blog_image} alt="" className="blogpage_blog_image" />
                     <div className="blogpage_blog_body">
-                      <div className="blogpage_body_header_div d-flex justify-content-between">
-                      <div>
-                      <p className="blogpage_auther_name_text">Category: {value.catogery}</p>
+                      <div className="row blogpage_body_header_div d-flex justify-content-between mt-3">
+                      <div className="col-md-6 col-sm-6 col-12">
+                       <p className="blogpage_auther_name_text">Category: {value.catogery}</p>
                       </div>
-                      <div>
-                      <p className="blogpage_published_date_text">{value.publish_date}</p>
+                      <div className="col-md-6 col-sm-6 col-12  text-sm-end text-start">
+                       <p className="blogpage_published_date_text">Publish on {`${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`}</p>
                       </div>
                       </div>
                       <h2 className="blogpage_blog_title">{value.title}</h2>

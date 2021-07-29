@@ -87,7 +87,7 @@ const Home = () => {
                <NavLink to="/create-blog" > <button className="home_about_button">Create Blog</button> </NavLink>
               </div>
               <div className="col-6 d-flex justify-content-md-start  justify-content-sm-center justify-content-center my-3">
-              <NavLink to="/my-blog"> <button className="home_contact_button">My Profile</button> </NavLink>
+              <NavLink to="/my-profile"> <button className="home_contact_button">My Profile</button> </NavLink>
               </div>
               </div> 
             </div>

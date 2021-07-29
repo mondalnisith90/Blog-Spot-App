@@ -273,17 +273,16 @@ const MyProfile = () => {
 
          </div>
          <div className="myprofile_user_info_div">
-         <div className="d-flex justify-content-between align-content-center" style={{marginBottom: "-15px"}}>
-           <div>
+         <div className="row d-flex" style={{marginBottom: "-15px"}}>
+           <div className=" col-md-4 col-sm-4 col-12 order-2 order-sm-1">
            <p className="myprofile_user_info_text">Name: {name}</p>
            </div>
-           <div>
+           <div className=" col-md-4 col-sm-4 col-12  order-1 order-sm-2 text-center">
            <Tooltip title="Edit Profile">
              <EditIcon className="myProfile_edit_icon"  data-toggle="modal" data-target="#exampleModalCenter" />
-           </Tooltip>
-             
+           </Tooltip>    
            </div>
-           <div className="pr-2">
+           <div className=" text-sm-center  col-md-4 col-sm-4 col-12  order-3 order-sm-3" >
            <p className="myprofile_user_info_text">Profission: {profission}</p>
            </div>
          </div>
@@ -389,7 +388,7 @@ const MyProfile = () => {
          </div>  
           
           
-         <div className="row my-2 ml-3">
+         <div className="row my-3 ml-3">
                 <div className="col-md-4">
                   <Button variant="contained" color="secondary" className="update_profile_button"  data-toggle="modal" data-target="#exampleModalCenter"  startIcon={<EditIcon />} >
                    Edit Profile

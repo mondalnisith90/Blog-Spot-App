@@ -13,6 +13,7 @@ import { useHistory } from 'react-router';
 import { CurrentUserDataContext } from '../App';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import "../css/SignIn.css";
 
 
@@ -33,6 +34,7 @@ const SignIn = () => {
 
   const [inputFieldsData, setInputFieldsData] = useState({ email: "", password: ""});
   const [serverError, setServerError] = useState("");
+  const [progressbarState, setProgressbarState] = useState(false);
   const history = useHistory();
   const {email, password} = inputFieldsData;
 
@@ -46,6 +48,7 @@ const SignIn = () => {
 
    const signinFormSubmit = async (event) => {
      event.preventDefault();
+     setProgressbarState(true);
      //send data to server for user login
      const url = "http://localhost:8000/users/login";
      try {
@@ -58,8 +61,10 @@ const SignIn = () => {
           history.push("/");
         }, 2300);
       }
+      setProgressbarState(false);
      } catch (error) {
        //user login failed
+       setProgressbarState(false);
            //set server error message
            try{
              const serverResponse = error.response;
@@ -97,10 +102,15 @@ const SignIn = () => {
                   </div>
 
                <div className="row my-4">
-                <div className="col-md-6">
+                <div className="col-md-6 d-flex justify-content-start align-items-center">
+                <div className="mr-4">
                   <Button variant="contained" type="submit" color="secondary" className="signin_button" endIcon={<ExitToAppIcon />} >
-                  SignIn
+                   SignIn
                   </Button>
+                </div>
+                 <div>
+                   {progressbarState ? <CircularProgress color="secondary" /> : null }
+                 </div>
                 </div>
   
                <div className="col-md-6 mt-4">

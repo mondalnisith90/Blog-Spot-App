@@ -14,6 +14,7 @@ const MyBlogs = () => {
     const {currentUserData, setCurrentUserData} = useContext(CurrentUserDataContext);
     //myBlogs means current user all published blogs
     const [myBlogs, setMyBlogs] = useState([]);
+    const [blogNotFoundErrorState, setBlogNotFoundErrorState] = useState(false);
     const history = useHistory();
     //Here 'toggler' will use for switching between two different components
     //1. MyBlogBlog.jsx and 2. EditBlog.jsx
@@ -38,6 +39,7 @@ const MyBlogs = () => {
             if(serverResponse.status == 200){
                 //data is available
                 setMyBlogs(serverResponse.data);
+                setBlogNotFoundErrorState(serverResponse.data.length==0);
             }
             setProgressbarState(false);
         } catch (error) {
@@ -58,10 +60,9 @@ const MyBlogs = () => {
         {currentUserData.userLoginStatus ?
         <>
         <section className="myblogs_root_div">
-         <div className="row myblogs_main_div">
-         
-          <div className="col-lg-3 col-md-3 col-sm-12 col-12  text-center myblogs_profile_div " >
-          <diV>
+        <div className="row myblogs_main_div">
+        <div className="col-lg-3 col-md-3 col-sm-12 col-12  text-center myblogs_profile_div " > 
+         <diV>
               <img src={currentUserData.profileImageUrl} alt="" className="myblogs_profile_pic" />
               <p className="myblogs_profile_name">{currentUserData.name}</p>
               <hr className="myblogs_hr mt-2" />
@@ -79,13 +80,15 @@ const MyBlogs = () => {
               <p  className="myblog_profile_text">Total Blogs: {myBlogs.length}</p>
               </div>
               </div>
-              </diV>
-          </div>
+              </diV> 
+         </div> 
 
-          <div className="col-lg-9 col-md-9 col-sm-12 col-12  myblogs_blog_div">
-          <div className="mt-5">
+          <div className="col-lg-9 col-md-9 col-sm-12 col-12  myblogs_blog_div"> 
+        <div className="mt-5">
           {progressbarState ? <LinearProgress color="secondary" /> : null }
           </div>
+
+          {blogNotFoundErrorState ? <h1 className="myblog_not_found_error">Sorry, You are not published any blog still now...</h1> : null }
          
           {toggler ? 
           <>
@@ -93,9 +96,10 @@ const MyBlogs = () => {
               return (<MyBlogBlog setToggler={setToggler} blog={value} key={index} setBlogToEdit={setBlogToEdit} fetchBlogsFromServer={fetchBlogsFromServer}/>);
            })}
           </> : 
-            <EditBlog setToggler={setToggler} blogToEdit={blogToEdit}  fetchBlogsFromServer={fetchBlogsFromServer} /> }
+            <EditBlog setToggler={setToggler} blogToEdit={blogToEdit}  fetchBlogsFromServer={fetchBlogsFromServer} /> } 
+
+          </div> 
           </div>
-           </div> 
         </section>
         </> : <DefaultPage title={"To see your blogs you have to SignUp or Login first."} /> }
        </>
